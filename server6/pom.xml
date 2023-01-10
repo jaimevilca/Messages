@@ -79,6 +79,11 @@
       <artifactId>quarkus-narayana-jta</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-websockets</artifactId>
+    </dependency>
+
   </dependencies>
   <build>
     <plugins>
