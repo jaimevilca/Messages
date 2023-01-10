@@ -4,46 +4,47 @@ import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.websocket.*;
+import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @ServerEndpoint("/notifications")
 @ApplicationScoped
 public class WebsocketHandler {
-
-    Logger LOG = Logger.getLogger(WebsocketHandler.class);
-
-    Session session;
+    Map<String, Session> sessions = new ConcurrentHashMap<>();
 
     @OnOpen
-    public void onOpen(Session session) {
-        LOG.info("Connection established...");
-        session.getAsyncRemote().sendObject("Connection established", result ->  {
-            if (result.getException() != null) {
-                LOG.error("Unable to send message: " + result.getException());
-            }
-        });
-        this.session = session;
+    public void onOpen(Session session, @PathParam("username") String username) {
+
+        sessions.put(username, session);
+        broadcast("User " + username + " joined");
     }
 
     @OnClose
-    public void onClose(Session session) {
-        LOG.info("Session disconnected...");
-        this.session = null;
+    public void onClose(Session session, @PathParam("username") String username) {
+        sessions.remove(username);
+        broadcast("User " + username + " left");
     }
 
     @OnError
-    public void onError(Session session, Throwable throwable) {
-        LOG.error("Error: " + throwable.getMessage());
-        this.session = null;
+    public void onError(Session session, @PathParam("username") String username, Throwable throwable) {
+        sessions.remove(username);
+        broadcast("User " + username + " left on error: " + throwable);
     }
 
     @OnMessage
-    public void onMessage(String message) {
-        LOG.info("Message received: " + message);
-        session.getAsyncRemote().sendObject("Echo: " + message, result -> {
-            if(result.getException() != null) {
-                LOG.error("Exception sending message: " + result.getException());
-            }
+    public void onMessage(String message, @PathParam("username") String username) {
+        broadcast(">> " + username + ": " + message);
+    }
+
+    private void broadcast(String message) {
+        sessions.values().forEach(s -> {
+            s.getAsyncRemote().sendObject(message, result ->  {
+                if (result.getException() != null) {
+                    System.out.println("Unable to send message: " + result.getException());
+                }
+            });
         });
     }
 

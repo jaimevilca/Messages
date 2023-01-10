@@ -6,13 +6,12 @@ Algunos servicios están implementados con Node.js/Express y otros con Java/Spri
 
 Para la construcción de los servicios y su ejecución, así como la ejecución de los servicios auxiliares requeridos se usan scripts implementados en Node.js. Posiblemente no sea el lenguaje de scripting más utilizado para este caso de uso, pero en este caso concreto facilita la interoperabilidad en varios SOs y es sencillo.
 
-## Iniciar servicios auxiliares: MongoDB y MySQL
+## Iniciar servicios auxiliares: Kafka , MongoDB y MySQL
 
 Los servicios auxiliares se ejecutan con la tecnología de contenedores Docker usando el siguiente comando:
 
 ```
-$ docker run --rm -d -p 27017-27019:27017-27019 --name mongodb mongo
-$ docker run --rm -d -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=eoloplantsDB -p 3306:3306 --name mysql mysql:8.0.22
+$ docker-compose -f docker-compose.yml up
 ```
 
 ## Construir servicios

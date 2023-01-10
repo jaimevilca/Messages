@@ -16,9 +16,13 @@
 
 package es.codeurjc.eoloplanner.server;
 
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
+
+import java.util.Properties;
 
 @SpringBootApplication
 @EnableAsync
@@ -28,4 +32,19 @@ public class Application {
 		SpringApplication.run(Application.class, args);
 	}
 
+
+	@Bean
+	public KafkaProducer<String, Object> kafkaConfig(){
+
+		Properties props = new Properties();
+		props.put("bootstrap.servers", "localhost:9092");
+		props.put("acks", "all");
+		props.put("retries", 0);
+		props.put("batch.size", 16384);
+		props.put("linger.ms", 1);
+		props.put("buffer.memory", 33554432);
+		props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+		props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+		return new KafkaProducer(props);
+ 	}
 }

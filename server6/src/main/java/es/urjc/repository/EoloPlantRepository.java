@@ -1,7 +1,7 @@
 package es.urjc.repository;
 
 import es.urjc.model.EoloPlant;
-import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.hibernate.reactive.panache.PanacheRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 

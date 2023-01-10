@@ -16,6 +16,6 @@ public class SampleDataLoader {
 
     @Transactional
     void onStart(@Observes StartupEvent ev) {
-        posts.persist(new EoloPlant("Madrid", "madrid-sunny-flat"));
+      //  posts.persist(new EoloPlant("Madrid", "madrid-sunny-flat"));
     }
 }

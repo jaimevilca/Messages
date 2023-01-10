@@ -4,12 +4,11 @@ type Query {
 }
 
 type Mutation {
-    createEoloPlant(eoloPlant: EoloPlantInput): EoloPlant
-    replaceEoloPlant(id: ID!, eoloPlant: EoloPlantInput): EoloPlant
-    deleteEoloPlant(id: ID!): EoloPlant
+    createEoloPlant(eoloPlant: EoloPlantInput): Uni<EoloPlantResponseDto>
+
 }
 
-type EoloPlant {
+type EoloPlantResponseDto {
     id: ID!
     city: String!
     planning: String!

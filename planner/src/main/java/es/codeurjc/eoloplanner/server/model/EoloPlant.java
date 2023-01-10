@@ -61,12 +61,19 @@ public class EoloPlant {
 		this.completed = completed;
 	}
 
+	public void addProgress(){
+		this.setProgress(this.getProgress() + 25 );
+		this.setCompleted(this.getProgress() == 100);
+	}
+
 	@Override
 	public String toString() {
 		return "EoloPlant{" +
 				"id=" + id +
 				", city='" + city + '\'' +
 				", planning='" + planning + '\'' +
+				", progress='" + progress + '\'' +
+				", completed='" + completed + '\'' +
 				'}';
 	}
 }

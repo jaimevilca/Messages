@@ -9,14 +9,14 @@ public class EoloPlantDeserializer implements Deserializer<EoloPlant> {
     public EoloPlant deserialize(String topic, byte[] data) {
         String contentAsString = new String(data, StandardCharsets.UTF_8);
         String[] segments = contentAsString.split(",");
+        Long id = Long.valueOf(segments[0]);
         String city = segments[1];
         String planning = segments[2];
-        int progress = Integer.parseInt(segments[3]);
+        int progress = Integer.valueOf(segments[3]);
         boolean isCompleted = Boolean.parseBoolean(segments[4]);
 
-        EoloPlant received = new EoloPlant(planning, city);
-        received.setProgress(progress);
-        received.setCompleted(isCompleted);
+        EoloPlant received = new EoloPlant(id, city, planning, progress, isCompleted);
+
         return received;
     }
 }

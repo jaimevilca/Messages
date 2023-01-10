@@ -1,20 +1,19 @@
 package es.urjc;
 
+import es.urjc.dto.EoloPlantResponseDto;
 import es.urjc.model.EoloPlant;
 import es.urjc.repository.EoloPlantRepository;
+import io.quarkus.hibernate.reactive.panache.common.runtime.ReactiveTransactional;
+import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.graphql.GraphQLApi;
 import org.eclipse.microprofile.graphql.Id;
 import org.eclipse.microprofile.graphql.Mutation;
 import org.eclipse.microprofile.graphql.Query;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.util.Collection;
+import java.util.List;
 
-import static javax.transaction.Transactional.TxType.SUPPORTS;
-
-@ApplicationScoped
 @GraphQLApi
 public class EoloPlantResource {
 
@@ -24,6 +23,29 @@ public class EoloPlantResource {
     @Inject
     Producer producer;
 
+
+    @Query
+    public Collection<EoloPlant> eoloPlants() {
+        return List.of(new EoloPlant());
+    }
+
+    @Query
+    public EoloPlant eoloPlant(@Id long id) {
+        return new EoloPlant();
+    }
+
+    @Mutation
+    @ReactiveTransactional
+    public Uni<EoloPlantResponseDto> createEoloPlant(EoloPlant eoloPlant) {
+        eoloPlant.setProgress(0);
+        eoloPlant.setCompleted(false);
+        return eoloPlants.persist(eoloPlant).onItem()
+                .transform(p -> {
+                    producer.send(p);
+                    return new EoloPlantResponseDto(p.getId(), p.getCity(), p.getPlanning());
+                });
+    }
+    /*
     @Query
     public Collection<EoloPlant> eoloPlants() {
         return eoloPlants.listAll();
@@ -34,13 +56,10 @@ public class EoloPlantResource {
         return eoloPlants.findByIdOptional(id).orElseThrow();
     }
 
-    @Mutation
-    @Transactional(SUPPORTS)
-    public EoloPlant createEoloPlant(EoloPlant eoloPlant) {
-        producer.send(eoloPlant);
-        eoloPlants.persist(eoloPlant);
-        return eoloPlant;
-    }
+
+        * */
+/*
+}
 
     @Mutation
     @Transactional
@@ -58,4 +77,5 @@ public class EoloPlantResource {
         eoloPlants.deleteById(id);
         return eoloPlant;
     }
+    */
 }

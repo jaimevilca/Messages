@@ -1,6 +1,8 @@
 package es.urjc.model;
 
 
+import io.vertx.codegen.annotations.Nullable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,13 +18,20 @@ public class EoloPlant {
 	private String city;
 	private String planning;
 
-	private int progress;
+	private Integer progress;
 
-	private boolean completed;
+	private Boolean completed;
 
-	public EoloPlant(String city, String planning) {
+	public EoloPlant(Long id ,String city, String planning, int progress, boolean completed) {
+		this.id = id;
 		this.city = city;
 		this.planning = planning;
+		this.progress = progress;
+		this.completed = completed;
+	}
+
+	public EoloPlant(String city) {
+		this.city = city;
 	}
 
 	public EoloPlant() {
@@ -53,12 +62,14 @@ public class EoloPlant {
 		this.planning = planning;
 	}
 
-	@Override
+
 	public String toString() {
 		return "EoloPlant{" +
 				"id=" + id +
 				", city='" + city + '\'' +
 				", planning='" + planning + '\'' +
+				", progress='" + progress + '\'' +
+				", completed='" + completed + '\'' +
 				'}';
 	}
 
@@ -66,15 +77,16 @@ public class EoloPlant {
 		return progress;
 	}
 
-	public void setProgress(int progress) {
-		this.progress = progress;
-	}
-
 	public boolean isCompleted() {
 		return completed;
 	}
 
-	public void setCompleted(boolean completed) {
+
+	public void setProgress(Integer progress) {
+		this.progress = progress;
+	}
+
+	public void setCompleted(Boolean completed) {
 		this.completed = completed;
 	}
 }

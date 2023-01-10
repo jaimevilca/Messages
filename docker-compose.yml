@@ -1,0 +1,51 @@
+version: '3.3'
+
+services:
+
+  mongodb:
+    image: 'bitnami/mongodb:4.2.8'
+    environment:
+      - MONGODB_DATABASE=topo
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MONGODB_PORT_NUMBER=27018
+      - MONGODB_ADVERTISED_HOSTNAME=localhost
+
+    ports:
+      - "27018:27018"
+
+
+  zookeeper:
+    image: 'bitnami/zookeeper:latest'
+    ports:
+      - '2181:2181'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+  kafka:
+    image: 'bitnami/kafka:latest'
+    ports:
+      - '9092:9092'
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    depends_on:
+      - zookeeper
+
+  db:
+    image: mysql:8.0
+    cap_add:
+      - SYS_NICE
+    restart: always
+    environment:
+      - MYSQL_DATABASE=eoloplantsDB
+      - MYSQL_ROOT_PASSWORD=secure
+    ports:
+      - '3306:3306'
+    volumes:
+      - db:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+volumes:
+  db:
+    driver: local
